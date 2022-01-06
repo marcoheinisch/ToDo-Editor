@@ -5,10 +5,6 @@
   
 </p>
 
-## Table of contents
-
-This project is highly based on [SethWalkeroo/Quiet-Text](https://github.com/SethWalkeroo/Quiet-Text) (MIT-License) from Seth Walker.
-
 
 ## Table of contents
 - [Notable Features](#notable-features)
@@ -19,7 +15,9 @@ This project is highly based on [SethWalkeroo/Quiet-Text](https://github.com/Set
 
 ## About
 
-Quiet Text aims to give you a **clean and simple** text editor experience. Everything is right in front of you and all completely customizable to your preferences. Too many text editors clutter their ui with unnecessary tooling that overwhelms their users. It isn't uncommon for somebody to lose hours of their precious work day mulling over and disabling irritating configuration settings in their text editor/ide. We want to eliminate the annoyances of a noisy/busy text editing environment and bring you an environment that has the **main goal of increasing focus and eliminating distractions**.
+This project is highly based on [SethWalkeroo/Quiet-Text](https://github.com/SethWalkeroo/Quiet-Text) (MIT-License) from Seth Walker.
+
+QuietToDo aims to give you a **clean and simple** text editor experience. Everything is right in front of you and all completely customizable to your preferences.  We want to eliminate the annoyances of a noisy/busy text editing environment and bring you an environment that has the **main goal of increasing focus and eliminating distractions**.
 
 ## Notable Features
 
@@ -31,7 +29,7 @@ Quiet Text aims to give you a **clean and simple** text editor experience. Every
 ## Keyboard Shortcuts
 
 
-Quiet Text has shortcuts for most commonly performed actions. The list of all the shortcuts is presented bellow:
+QuietToDo has shortcuts for most commonly performed actions. The list of all the shortcuts is presented bellow:
 
 | Command | KeyBinding | Description |
 | ------- | ---------- | ----------- |
@@ -70,7 +68,7 @@ If the release binary is not up to date with the current development branch, the
 
 1. Clone source files off github into your preferred directory
 ```sh
-git clone https://github.com/SethWalkeroo/Quiet-Text.git
+git clone https://github.com/marcoheinisch/ToDo-Editor.git
 ```
 
 2. Install pyinstaller
@@ -96,7 +94,6 @@ pyinstaller quiet_main.spec
 
 
 ## Installation
-This project requires **Pygments** as well as **PyYAML**. Both of these packages can be installed through a virtual environment with **requirements.txt**.
 After you install the dependencies, you can simply head into the **src** directory and launch the editor from **src/quiet_main.py**.
 
 **Mac and Linux installation:**

@@ -19,7 +19,7 @@ class QuietText(tk.Frame):
     def __init__(self, *args, **kwargs):
         """The main class for bringing the whole shebang together"""
         tk.Frame.__init__(self, *args, **kwargs)
-        master.title('untitled - Quiet Text')
+        master.title('QuietToDo')
         # defined size of the editer window
         master.geometry('600x500')
         self.operating_system = system()
