@@ -1,0 +1,12 @@
+== Header
+o  Task 
+o  Task and a > following Task
+>  Waiting for X < then do Y
+x  Done Task
+
+== Other Tasks
+o  12:30 Task
+o  31.12.2021 Task
+o  Task
+   o  Subtask
+

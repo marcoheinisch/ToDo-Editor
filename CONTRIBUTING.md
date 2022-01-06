@@ -17,7 +17,7 @@ Below you will find the process and workflow used to review and merge your chang
 ```
 $ git clone https://github.com/<your-username>/Quiet-Text
 $ cd QuietTxt
-$ git remote add upstream https://github.com/marcoheinisch/ToDo-Editor
+$ git remote add upstream https://github.com/sethwalkeroo/Quiet-Text
 ```
 - If you have already forked the project, update your copy before working.
 ```

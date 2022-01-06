@@ -1,20 +1,21 @@
 import tkinter as tk
-from tkinter import messagebox
-from quiet_loaders import QuietLoaders
+
+from quiet_config import Configurations
+from quiet_loaders import ConfigLoader
+
 
 class CustomText(tk.Text):
     def __init__(self, *args, **kwargs):
         tk.Text.__init__(self, *args, **kwargs)
 
         # create a proxy for the underlying widget
-        self.bg_color ='#eb4034'
-        self.fg_color = '#eb4034'
-        self.active_fg = '#eb4034'
-        self.active_bg = '#eb4034'
         self.isControlPressed = False
         self._orig = self._w + '_orig'
         self.tk.call('rename', self._w, self._orig)
         self.tk.createcommand(self._w, self._proxy)
+        self.persistance_tags = [tk.SEL]
+
+        self.reload_settings()
 
     def _proxy(self, *args):
         # let the actual widget perform the requested action
@@ -32,7 +33,7 @@ class CustomText(tk.Text):
             result = ''
 
         # generate an event if something was added or deleted,
-        # or the cursor position changed
+        # or the cursor position changed https://regex101.com/
         if (args[0] in ('insert', 'replace', 'delete') or 
             args[0:3] == ('mark', 'set', 'insert') or
             args[0:2] == ('xview', 'moveto') or
@@ -51,14 +52,11 @@ class CustomText(tk.Text):
             text_to_find,
             self.find_search_starting_index,
             stopindex=tk.END, count=length)
-
         if index:
             self.tag_remove('find_match', 1.0, tk.END)
-
             end = f'{index}+{length.get()}c'
             self.tag_add('find_match', index, end)
             self.see(index)
-
             self.find_search_starting_index = end
             self.find_match_index = index
         else:
@@ -84,12 +82,29 @@ class CustomText(tk.Text):
         self.find_match_index = None
         self.tag_remove('find_match', 1.0, tk.END)
 
-    def reload_text_settings(self):
+    def reload_settings(self):
         self.bg_color = '#eb4034'
         self.bg_color = '#eb4034'
         self.fg_color = '#eb4034'
         self.active_fg = '#eb4034'
         self.active_bg = '#eb4034'
+        conf = Configurations.Settings
+        theme = Configurations.Theme
+
+        ConfigLoader.add_font_attr(self)
+        self.configure(
+            bg=theme.bg_color,
+            pady=conf.padding_y,
+            padx=conf.padding_x,
+            fg=theme.font_color,
+            spacing1=conf.text_top_lineheight,
+            spacing3=conf.text_bottom_lineheight,
+            insertbackground=theme.insertion_color,
+            selectbackground= theme.text_selection_bg_clr,
+            insertofftime=conf.insertion_blink,
+            bd=conf.border,
+            highlightthickness=conf.border,
+            wrap=conf.text_wrap)
 
     def highlight_pattern(self, pattern, tag, start="1.0", end="end",
                           regexp=False):
@@ -98,7 +113,7 @@ class CustomText(tk.Text):
         If 'regexp' is set to True, pattern will be treated as a regular
         expression according to Tcl's regular expression syntax.
         '''
-
+        
         start = self.index(start)
         end = self.index(end)
         self.mark_set("matchStart", start)
@@ -108,10 +123,14 @@ class CustomText(tk.Text):
         count = tk.IntVar()
         while True:
             index = self.search(pattern, "matchEnd","searchLimit",
-                                count=count, regexp=regexp)
+                                count=count, regexp=regexp, exact=True)
             if index == "": break
             if count.get() == 0: break # degenerate pattern which matches zero-length strings
-            print(pattern)
             self.mark_set("matchStart", index)
             self.mark_set("matchEnd", "%s+%sc" % (index, count.get()))
             self.tag_add(tag, "matchStart", "matchEnd")
+
+    def clear_highlight(self):
+        for tag in self.tag_names():
+            if tag not in self.persistance_tags:
+                self.tag_remove(tag, 1.0, tk.END)

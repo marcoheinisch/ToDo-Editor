@@ -1,37 +1,52 @@
+import re
 import tkinter as tk
+
+from quiet_config import Configurations
+from quiet_loaders import ConfigLoader
+
 
 class TextLineNumbers(tk.Canvas):
     def __init__(self, parent, *args, **kwargs):
         tk.Canvas.__init__(self, *args, **kwargs)
-        self._text_font = parent.settings['font_family']
         self._parent = parent
-        self.textwidget = parent.textarea
+        self._textarea = parent.textarea
+        self.reload_settings()
+
+    def reload_settings(self):
+        self.conf = Configurations.Settings
+        self.theme = Configurations.Theme
+        ConfigLoader.add_font_attr(self)
+        self.redraw()
 
     def attach(self, text_widget):
-        self.textwidget = text_widget
+        self._textarea = text_widget
 
     def redraw(self, *args):
-        font_color = self._parent.menu_fg
-        bg_color = self._parent.bg_color
-        indicator_on = self._parent.current_line_indicator
-        current_line_symbol = self._parent.current_line_symbol
+        def drawthisline(line_index, lines):
+            if len(lines)>line_index and len(lines[line_index])>0:
+                print(lines[line_index][0])
+                tmp = (lines[line_index][0] == 'o')
+                return tmp
+            else:
+                return False
+
         if not self.visible:
             return
-
         self.delete('all')
         self.config(width=(self._parent.font_size * 3), 
-                    bd=0, bg=bg_color, highlightthickness=0)
-
-        i = self.textwidget.index('@0,0')
+                    bd=0, bg=self.theme.bg_color, highlightthickness=0)
+        i = self._textarea.index('@0,0')
         i_str = 0
+        lines = self._textarea.get(0.0, tk.END).split("\n")
         while True:
-            dline= self.textwidget.dlineinfo(i)
-            if dline is None:
-                break
+            dline= self._textarea.dlineinfo(i)
+            if dline is None:break
+
             y = dline[1]
-            index = self.textwidget.index(tk.INSERT)
+            index = self._textarea.index(tk.INSERT)
+            i_int = int(str(i).split('.')[0])
             pos = index.split('.')[0]
-            if dline[2] < 30:
+            if not drawthisline(i_int-1,lines):
                 linenum = '~ '
             else:
                 i_str += 1
@@ -39,13 +54,13 @@ class TextLineNumbers(tk.Canvas):
                     linenum = str(i_str)
                 else:
                     linenum = '~' + str(i_str)
-            if pos == str(i).split('.')[0] and indicator_on:
-                linenum += current_line_symbol
+            if pos == str(i).split('.')[0] and self.conf.current_line_indicator:
+                linenum += self.conf.current_line_indicator_symbol
             self.create_text(2, y, anchor='nw',
                              text=linenum,
-                             font=(self._text_font, self._parent.font_size),
-                             fill=font_color)
-            i = self.textwidget.index('%s+1line' % i)
+                             font=(self.conf.font_family, self._parent.font_size),
+                             fill=self.theme.font_color_linenumbers)
+            i = self._textarea.index('%s+1line' % i)
 
     @property
     def visible(self):
@@ -54,7 +69,6 @@ class TextLineNumbers(tk.Canvas):
     @visible.setter
     def visible(self, visible):
         self.config(state='normal' if visible else 'disabled')
-
         if visible:
             self.redraw()
         else:

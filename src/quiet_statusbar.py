@@ -1,5 +1,8 @@
 import tkinter as tk
 
+from quiet_config import Configurations
+
+
 class Statusbar:
 
     # initialising the status bar
@@ -14,10 +17,12 @@ class Statusbar:
 
         self.status = tk.StringVar()
 
+        theme = Configurations.Theme
         label = tk.Label(
             parent.textarea,
             textvariable=self.status,
-            fg=parent.font_color,
+            #TODO (Manage Theme)
+            fg=theme.font_color,
             bg='#fff',
             anchor='se',
             font=font_specs)
@@ -30,8 +35,8 @@ class Statusbar:
             self.display_status_message('Changes saved', msg_type='save')
         elif event == 'no file run':
             self.display_status_message('Cannot run. No file selected.')
-        elif event == 'cant build':
-            self.display_status_message('Cannot build this type of file.')
+        elif event == 'cant sync':
+            self.display_status_message('Changes not synced.')
         elif event == 'no file':
             self.display_status_message('No file detected. Create or open a file.')
         elif event == 'no python':
