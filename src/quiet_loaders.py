@@ -118,11 +118,18 @@ class SyncManager:
         
         if not Configurations.Settings.update:
             return
-        from subprocess import check_call as run 
+        
+        import subprocess
         src_dir = os.path.dirname(os.path.realpath(__file__))
+        from pathlib import Path
+        path = Path(src_dir)
+        src_dir=path.parent.parent.absolute()
         branch = ["main","feature"][Configurations.Settings.update_feature]
-        egg ="todo-editor"
-
+        egg =path.parent.name
+        
+        
         UPDATE_CMD = 'pip install --upgrade --src="%s" -e git+https://github.com/marcoheinisch/ToDo-Editor@%s#egg=%s'
         cmd = UPDATE_CMD % (src_dir, branch, egg) 
-        run(cmd)
+        print(f"start {cmd}")
+        subprocess.call(f"cmd /k start cmd /k {cmd}", shell=True)
+        exit()
