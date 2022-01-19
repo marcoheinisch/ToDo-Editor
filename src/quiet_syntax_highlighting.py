@@ -19,13 +19,18 @@ class SyntaxHighlighting():
     
     def highlight(self):    
         self.text.clear_highlight()
-
-        for p in self.pattern.patternlist:
-            self.text.highlight_pattern(
+        
+        for p in self.pattern.patternmovelist:
+            self.text.pattern_move(
                 p.regex, 
                 p.token, 
                 regexp=True)
 
+        for p in self.pattern.patternlist:
+            self.text.pattern_highlight(
+                p.regex, 
+                p.token, 
+                regexp=True)
 
     def initial_highlight(self, *args):
         self.clear_existing_tags()

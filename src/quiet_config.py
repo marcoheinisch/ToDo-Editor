@@ -71,6 +71,11 @@ class Configurations:
                 self.regex = regex
                 self.token = token
                 self.styledict = styledict
+        
+        pattern_split = _Pattern(r"(x=.*)",
+                'Token.Headers',
+                {'foreground':'#D73A49'})
+        
         patternlist = [
             _Pattern(r"(\d\d\:\d\d)", 
                 'Token.Time', 
@@ -87,9 +92,15 @@ class Configurations:
             _Pattern(r"(<.*)", 
                 'Token.Fade.Next', 
                 {'foreground':'#808080'}),
+            pattern_split,
             _Pattern(r"(\t?x  [^\n]*?\n)", 
                 'Token.Done', 
                 {'foreground':'#e0e0e0', 'overstrike':'True'})]
 
+
+        patternmovelist = [
+            _Pattern(r"(\t?x  [^\n]*?\n)", 
+                'Token.Done', 
+                {'foreground':'#e0e0e0', 'overstrike':'True'})]
 
 

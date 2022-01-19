@@ -1,3 +1,4 @@
+from textwrap import indent
 import tkinter as tk
 
 from quiet_config import Configurations
@@ -106,7 +107,7 @@ class CustomText(tk.Text):
             highlightthickness=conf.border,
             wrap=conf.text_wrap)
 
-    def highlight_pattern(self, pattern, tag, start="1.0", end="end",
+    def pattern_highlight(self, pattern, tag, start="1.0", end="end",
                           regexp=False):
         '''Apply the given tag to all text that matches the given pattern
 
@@ -118,11 +119,11 @@ class CustomText(tk.Text):
         end = self.index(end)
         self.mark_set("matchStart", start)
         self.mark_set("matchEnd", start)
-        self.mark_set("searchLimit", end)
+        self.mark_set("searchlimit_mark", end)
 
         count = tk.IntVar()
         while True:
-            index = self.search(pattern, "matchEnd","searchLimit",
+            index = self.search(pattern, "matchEnd","searchlimit_mark",
                                 count=count, regexp=regexp, exact=True)
             if index == "": break
             if count.get() == 0: break # degenerate pattern which matches zero-length strings
@@ -130,6 +131,54 @@ class CustomText(tk.Text):
             self.mark_set("matchEnd", "%s+%sc" % (index, count.get()))
             self.tag_add(tag, "matchStart", "matchEnd")
 
+
+    def pattern_move(self, pattern, tag, start="1.0", end="end",
+                          regexp=False):
+        
+        start = self.index(start)
+        end = self.index(end)
+        self.mark_set("matchStart", start)
+        self.mark_set("matchEnd", start)
+        
+        self.update_search_limit()
+
+        count = tk.IntVar()
+        found = 0
+        while True:
+            self.update_search_limit()
+            index = self.search(pattern, "matchEnd","searchlimit_mark",
+                                count=count, regexp=regexp, exact=True, )
+            if index == "": break
+            if count.get() == 0: break # degenerate pattern which matches zero-length strings
+                      
+            text = self.get(index,"%s+%sc" % (index, count.get()))
+            self.delete(index,"%s+%sc" % (index, count.get()))
+            
+            self.update_search_limit()
+            self.insert(self.index('insert_mark'), text)
+            
+            #print(f"index: {index} searchlimit_mark: { self.index('searchlimit_mark') } insert_mark: { self.index('insert_mark') } < {end}")
+            
+            found+=1
+            
+    def update_search_limit(self):
+        index_limit = self.search_limit()
+        if not index_limit:
+            index_limit = self.index(tk.END)
+            self.insert(tk.END, "x= Done \n")
+            index_insert = self.index(tk.END)
+        else:
+            index_insert = f"{int(index_limit.split('.')[0])+1}.0"
+        
+        self.mark_set("searchlimit_mark", index_limit)  
+        self.mark_set("insert_mark", index_insert)  
+        
+    def search_limit(self):
+        count_s = tk.IntVar()
+        index = self.search(Configurations.Patterns.pattern_split.regex, "1.0","end",
+                                   count=count_s, regexp=True, exact=True, )
+        return index
+        
     def clear_highlight(self):
         for tag in self.tag_names():
             if tag not in self.persistance_tags:
