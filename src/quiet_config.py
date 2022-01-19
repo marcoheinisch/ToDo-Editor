@@ -34,6 +34,9 @@ class Configurations:
             'appId': "",
             'measurementId': ""
         }
+        update = False # Carefully... experimental feature will make dam things! 
+        update_feature = False
+        update_path = "$HOME/src-test2/"
 
     class Theme:
         comment_color= '#6A737D'

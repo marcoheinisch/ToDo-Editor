@@ -108,3 +108,21 @@ class SyncManager:
         db = Firebase(self.fb_config).database()
         textarea_content = self.qt.textarea.get(1.0, tk.END)
         db.set(textarea_content)
+        
+        
+    def update(self): 
+        
+        self.save()
+        
+        # TODO: implement auto updating
+        
+        if not Configurations.Settings.update:
+            return
+        from subprocess import check_call as run 
+        src_dir = os.path.dirname(os.path.realpath(__file__))
+        branch = ["main","feature"][Configurations.Settings.update_feature]
+        egg ="todo-editor"
+
+        UPDATE_CMD = 'pip install --upgrade --src="%s" -e git+https://github.com/marcoheinisch/ToDo-Editor@%s#egg=%s'
+        cmd = UPDATE_CMD % (src_dir, branch, egg) 
+        run(cmd)

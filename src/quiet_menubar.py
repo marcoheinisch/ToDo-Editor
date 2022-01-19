@@ -37,6 +37,9 @@ class Menubar():
         file_dropdown.add_command(
             label='Exit',
             command=parent.manager.on_closing)
+        file_dropdown.add_command(
+            label='Update',
+            command=parent.manager.update)
 
         #view dropdown menu
         view_dropdown = tk.Menu(
