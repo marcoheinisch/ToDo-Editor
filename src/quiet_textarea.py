@@ -1,4 +1,3 @@
-from textwrap import indent
 import tkinter as tk
 
 from quiet_config import Configurations

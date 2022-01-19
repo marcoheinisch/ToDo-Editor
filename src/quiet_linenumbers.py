@@ -1,4 +1,3 @@
-import re
 import tkinter as tk
 
 from quiet_config import Configurations
