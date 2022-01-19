@@ -4,10 +4,7 @@ from tkinter import messagebox
 import tkinter.font as tk_font
 import tkinter as tk
 
-from firebase import Firebase
 from quiet_config import Configurations
-
-
 
 class ConfigLoader:
     
@@ -99,11 +96,15 @@ class SyncManager:
         self.qt.clear_and_replace_textarea(text)
     
     def pull_remote_text(self) -> str:
+        
+        from firebase import Firebase
         db = Firebase(self.fb_config).database()
         return db.get().val()
         
 
     def push_remote_text(self):
+        
+        from firebase import Firebase
         db = Firebase(self.fb_config).database()
         textarea_content = self.qt.textarea.get(1.0, tk.END)
         db.set(textarea_content)

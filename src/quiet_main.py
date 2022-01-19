@@ -21,7 +21,7 @@ class QuietText(tk.Frame):
         tk.Frame.__init__(self, *args, **kwargs)
         master.title('QuietToDo')
         # defined size of the editer window
-        master.geometry('600x500')
+        master.geometry('400x800')
         self.operating_system = system()
 
         self.conf = Configurations.Settings
@@ -48,14 +48,22 @@ class QuietText(tk.Frame):
         self.textarea.config(tabs=(self._tab_width,))
 
         self.context_menu = ContextMenu(self)
+        
         self.menubar = Menubar(self)
+        
         self.statusbar = Statusbar(self)
+        
         self.syntax_highlighter = SyntaxHighlighting(self, self.textarea, self.initial_content)
 
         self.linenumbers.attach(self.textarea)
         self.linenumbers.pack(side=tk.LEFT, fill=tk.Y)
-        self.textarea.pack(side=tk.RIGHT, fill='both', expand=True)
         
+        # self.textarea_done =CustomText(self)
+        # self.textarea_done.insert('1.0',"TEEST_DONE")
+        # self.textarea_done.pack(side=tk.BOTTOM, fill='both')
+        
+        
+        self.textarea.pack(side=tk.RIGHT, fill='both', expand=True) 
         self.textarea.find_match_index = None
         self.textarea.find_search_starting_index = 1.0
 

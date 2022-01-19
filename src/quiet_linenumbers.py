@@ -24,7 +24,6 @@ class TextLineNumbers(tk.Canvas):
     def redraw(self, *args):
         def drawthisline(line_index, lines):
             if len(lines)>line_index and len(lines[line_index])>0:
-                print(lines[line_index][0])
                 tmp = (lines[line_index][0] == 'o')
                 return tmp
             else:
