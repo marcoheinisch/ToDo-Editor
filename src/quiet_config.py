@@ -58,12 +58,12 @@ class Configurations:
         s_bg_color = '#eb4034'
         s_font_color = '#eb4034'
         text_selection_bg_clr = '#eb4034'
-        troughx_clr = '#242222'
-        troughy_clr = '#242222'
-        menubar_bg_active = '#eb4034'
-        menubar_fg_active = '#eb4034'
-        menu_fg = '#eb4034'
-        menu_bg = '#eb4034'
+        troughx_clr = '#a4a9aE'
+        troughy_clr = '#a4a9aE'
+        menu_fg = '#000000'
+        menu_bg = '#E6F0F9'
+        menubar_bg_active = menu_bg
+        menubar_fg_active = '#005CC5'
    
     class Patterns:
         class _Pattern:

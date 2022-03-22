@@ -1,4 +1,5 @@
 import tkinter as tk
+from turtle import color
 
 from quiet_config import Configurations
 from quiet_loaders import ConfigLoader
@@ -16,7 +17,8 @@ class Menubar():
         # setting up basic features in menubar
         menubar = tk.Menu(
             parent.master,
-            font=font_specs)
+            font=font_specs,
+            background='#CBE2F7')
         parent.master.config(menu=menubar)
         self._menubar = menubar
 
@@ -72,12 +74,11 @@ class Menubar():
                 fg=theme.menu_fg,
                 activeforeground=theme.menubar_fg_active,
                 activebackground=theme.menubar_bg_active,
-                background = theme.bg_color,
+                bd=0
             )
         self._menubar.configure(
             bg=theme.menu_bg,
             fg=theme.menu_fg,
-            background = theme.bg_color,
             activeforeground= theme.menubar_fg_active,
             activebackground = theme.menubar_bg_active,
             activeborderwidth=0,
