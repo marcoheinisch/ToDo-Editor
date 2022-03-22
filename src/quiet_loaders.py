@@ -5,6 +5,9 @@ import tkinter.font as tk_font
 import tkinter as tk
 
 from quiet_config import Configurations
+import logger
+
+log = logger.get_logger(__name__)
 
 class ConfigLoader:
     
@@ -43,6 +46,7 @@ class SyncManager:
         self.fb_config = self.conf.sync_fb_key
     
     def save_local(self):
+        log.debug("save_local")
         textarea_content = self.qt.textarea.get(1.0, tk.END)
         with open(self.qt.conf.filename, 'w+') as f:
             f.write(textarea_content)
@@ -50,13 +54,14 @@ class SyncManager:
         
     # saving changes made in the file
     def save(self, *args):
+        log.debug("save")
         if self.conf.sync_remote:
             try:
                 self.push_remote_text()
             except Exception:
                 messagebox.showinfo("Warning", f"No remote save possible!")
 
-        if self.conf.filename:    
+        if self.conf.filename and os.path.isfile(self.conf.filename):    
             try:
                 self.save_local()
             except Exception as e:
@@ -64,11 +69,12 @@ class SyncManager:
 
     #On exiting the Program
     def quit_save(self, *args):
-        try:
-            os.path.isfile(self.conf.filename)
+        log.debug("quit_save")
+        try:            
             self.save()
-        except Exception:
-            self.save_as()
+        except Exception as e:
+            log.critical(f"quit_save save failed: {str(e)}.")
+            messagebox.showerror("Fehler", "Speichern fehlgeschlagen")
         sys.exit()
 
     def on_closing(self, *args):
@@ -76,34 +82,42 @@ class SyncManager:
 
     
     def load(self, *args):
+        log.debug("load")
         text = False
         if self.conf.sync_remote:
             try:
                 text = self.pull_remote_text()
             except Exception:
+                log.warning("sync_remote faild")
                 self.qt.statusbar.update_status('cant sync')
 
         if self.conf.filename:
             with open(self.conf.filename, 'r+') as f:
                 text_local = f.read()
+
                 if text:
                     if text != text_local:
+                        log.warning("diffrences in remote: /local:")
+                        log.info(text)
+                        log.info(text_local)
+
                         text += "\n>>>>>>>>>>> remote /\ | \/ local <<<<<<<<<<<<<\n" + text_local
                         self.qt.statusbar.update_status('cant sync')
                 else:
+                    log.info("load local")
                     text = text_local
             
         self.qt.clear_and_replace_textarea(text)
     
     def pull_remote_text(self) -> str:
-        
+        log.debug("pull_remote_text")
         from firebase import Firebase
         db = Firebase(self.fb_config).database()
         return db.get().val()
         
 
     def push_remote_text(self):
-        
+        log.debug("push_remote_text")
         from firebase import Firebase
         db = Firebase(self.fb_config).database()
         textarea_content = self.qt.textarea.get(1.0, tk.END)

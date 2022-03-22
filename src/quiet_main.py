@@ -13,15 +13,13 @@ from quiet_menubar import Menubar
 from quiet_statusbar import Statusbar
 from quiet_syntax_highlighting import SyntaxHighlighting
 from quiet_textarea import CustomText
+import logger
 
 
 class QuietText(tk.Frame):
     def __init__(self, *args, **kwargs):
         """The main class for bringing the whole shebang together"""
         tk.Frame.__init__(self, *args, **kwargs)
-        master.title('QuietToDo')
-        # defined size of the editer window
-        master.geometry('400x800')
         self.operating_system = system()
 
         self.conf = Configurations.Settings
@@ -40,28 +38,16 @@ class QuietText(tk.Frame):
         self.manager = SyncManager(self)
         self.textarea = CustomText(self)
         self.linenumbers = TextLineNumbers(self)
-        self.initial_content = self.textarea.get("1.0", tk.END)
-
-        # retrieving the font from the text area and setting a tab width
-        self._font = tk_font.Font(font=self.textarea['font'])
-        self._tab_width = self._font.measure(' ' * self.conf.tab_size)
-        self.textarea.config(tabs=(self._tab_width,))
-
         self.context_menu = ContextMenu(self)
-        
         self.menubar = Menubar(self)
-        
         self.statusbar = Statusbar(self)
-        
+
+        self.set_new_tab_width('default')
+        self.initial_content = self.textarea.get("1.0", tk.END)
         self.syntax_highlighter = SyntaxHighlighting(self, self.textarea, self.initial_content)
 
         self.linenumbers.attach(self.textarea)
         self.linenumbers.pack(side=tk.LEFT, fill=tk.Y)
-        
-        # self.textarea_done =CustomText(self)
-        # self.textarea_done.insert('1.0',"TEEST_DONE")
-        # self.textarea_done.pack(side=tk.BOTTOM, fill='both')
-        
         
         self.textarea.pack(side=tk.RIGHT, fill='both', expand=True) 
         self.textarea.find_match_index = None
@@ -69,12 +55,11 @@ class QuietText(tk.Frame):
 
         self.reconfigure_settings()
 
-        #calling function to bind hotkeys.
         self.bind_shortcuts()
-        self.control_key = False
-        self.menu_hidden = False
-        self.first_word = True
 
+        self.control_key = False
+        self.menu_hidden = True
+        self.first_word = True
         self.sync_stats = True
 
     def clear_and_replace_textarea(self, text):
@@ -102,6 +87,7 @@ class QuietText(tk.Frame):
         self.linenumbers.reload_settings()
         self.menubar.reload_settings()
         self.textarea.reload_settings()
+        
         self.set_new_tab_width(self.conf.tab_size)
 
     #hide status bar for text class so it can be used in menu class
@@ -350,12 +336,18 @@ class QuietText(tk.Frame):
             text.bind('<Shift-ISO_Left_Tab>', self.tab_text)
 
 if __name__ == '__main__':
+    
+    log = logger.setup_applevel_logger(file_name = 'log.log')
+    log.info('starting')
+
     master = tk.Tk()
-    master.update()
+    master.title('QuietToDo')
+    master.geometry('400x800')
+
     qt = QuietText(master)
     qt.pack(side='top', fill='both', expand=True)
     qt.manager.load()
+
     master.protocol("WM_DELETE_WINDOW", qt.manager.on_closing)
-    
     master.mainloop()
 
